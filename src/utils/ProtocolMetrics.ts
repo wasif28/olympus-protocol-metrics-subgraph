@@ -1,20 +1,17 @@
 import { Address, BigDecimal, BigInt, log} from '@graphprotocol/graph-ts'
 import { OlympusERC20 } from '../../generated/ProtocolMetrics/OlympusERC20';
-import { sOlympusERC20 } from '../../generated/ProtocolMetrics/sOlympusERC20';
 import { sOlympusERC20V2 } from '../../generated/ProtocolMetrics/sOlympusERC20V2';
 import { ERC20 } from '../../generated/ProtocolMetrics/ERC20';
 import { VeFXS } from '../../generated/ProtocolMetrics/VeFXS';
 import { UniswapV2Pair } from '../../generated/ProtocolMetrics/UniswapV2Pair';
 import { MasterChef } from '../../generated/ProtocolMetrics/MasterChef';
-import { OlympusStakingV2 } from '../../generated/ProtocolMetrics/OlympusStakingV2';
 import { OlympusStakingV3, StakeCall } from '../../generated/ProtocolMetrics/OlympusStakingV3';
-import { OlympusStakingV1 } from '../../generated/ProtocolMetrics/OlympusStakingV1';
 import { ConvexAllocator } from '../../generated/ProtocolMetrics/ConvexAllocator';
-import { Distributor } from '../../generated/sOlympusERC20V1/Distributor';
+import { Distributor } from '../../generated/sOlympusERC20V3/Distributor';
 import { ethereum } from '@graphprotocol/graph-ts'
 
 import { ProtocolMetric } from '../../generated/schema'
-import { AAVE_ALLOCATOR, ADAI_ERC20_CONTRACT, CONVEX_ALLOCATOR1, CONVEX_ALLOCATOR1_BLOCK, CONVEX_ALLOCATOR2, CONVEX_ALLOCATOR2_BLOCK, ERC20DAI_CONTRACT, ERC20FRAX_CONTRACT, LUSDBOND_CONTRACT1_BLOCK, LUSD_ERC20_CONTRACT, LUSD_ERC20_CONTRACTV2_BLOCK, OHMDAI_ONSEN_ID, OHM_ERC20_CONTRACT, ONSEN_ALLOCATOR, SOHM_ERC20_CONTRACT, SOHM_ERC20_CONTRACTV2, SOHM_ERC20_CONTRACTV2_BLOCK, STAKING_CONTRACT_V1, STAKING_CONTRACT_V2, STAKING_CONTRACT_V2_BLOCK, SUSHI_MASTERCHEF, SUSHI_OHMDAI_PAIR, SUSHI_OHMETH_PAIR, SUSHI_OHMLUSD_PAIR, TREASURY_ADDRESS, TREASURY_ADDRESS_V2, TREASURY_ADDRESS_V2_BLOCK, SUSHI_OHMETH_PAIR_BLOCK, UNI_OHMFRAX_PAIR, UNI_OHMFRAX_PAIR_BLOCK, UNI_OHMLUSD_PAIR_BLOCK, WETH_ERC20_CONTRACT, XSUSI_ERC20_CONTRACT, CVX_ERC20_CONTRACT, CVX_ERC20_CONTRACT_BLOCK, DISTRIBUTOR_CONTRACT_BLOCK, DISTRIBUTOR_CONTRACT, STAKING_CONTRACT_V3_BLOCK, STAKING_CONTRACT_V3, TREASURY_ADDRESS_V3, SOHM_ERC20_CONTRACTV3, SOHM_ERC20_CONTRACTV3_BLOCK, OHMV2_ERC20_CONTRACT_BLOCK, OHMV2_ERC20_CONTRACT, DAO_WALLET, SUSHI_OHMETH_PAIR_BLOCKV2, SUSHI_OHMETH_PAIRV2, SUSHI_OHMDAI_PAIRV2, UNI_OHMFRAX_PAIRV2, SUSHI_OHMDAI_PAIRV2_BLOCK, UNI_OHMFRAX_PAIR_BLOCKV2, MIGRATION_CONTRACT, CONVEX_CVX_ALLOCATOR, VLCVX_ERC20_CONTRACT_BLOCK, VLCVX_ERC20_CONTRACT, FXS_ERC20_CONTRACT, FXS_ERC20_CONTRACT_BLOCK, UNI_FXS_ETH_PAIR_BLOCK, VEFXSERC20_CONTRACT, VEFXSERC20_BLOCK, VEFXS_ALLOCATOR, OHMLUSD_ONSEN_ID, CONVEX_ALLOCATOR3_BLOCK, CONVEX_ALLOCATOR3, WBTC_ERC20_CONTRACT, UST_ERC20_CONTRACT, UST_ERC20_CONTRACT_BLOCK, DISTRIBUTOR_CONTRACT_BLOCK_V2, DISTRIBUTOR_CONTRACT_V2 } from './Constants';
+import { AAVE_ALLOCATOR, ADAI_ERC20_CONTRACT, ERC20DAI_CONTRACT, ERC20FRAX_CONTRACT, LUSD_ERC20_CONTRACT, OHMDAI_ONSEN_ID, ONSEN_ALLOCATOR, SUSHI_MASTERCHEF, SUSHI_OHMLUSD_PAIR, WETH_ERC20_CONTRACT, XSUSI_ERC20_CONTRACT, CVX_ERC20_CONTRACT, STAKING_CONTRACT_V3, TREASURY_ADDRESS_V3, SOHM_ERC20_CONTRACTV3, OHMV2_ERC20_CONTRACT, DAO_WALLET, SUSHI_OHMETH_PAIRV2, SUSHI_OHMDAI_PAIRV2, UNI_OHMFRAX_PAIRV2, CONVEX_CVX_ALLOCATOR, VLCVX_ERC20_CONTRACT, FXS_ERC20_CONTRACT, VEFXSERC20_CONTRACT, VEFXS_ALLOCATOR, OHMLUSD_ONSEN_ID, CONVEX_ALLOCATOR3, WBTC_ERC20_CONTRACT, UST_ERC20_CONTRACT, DISTRIBUTOR_CONTRACT_V2 } from './Constants';
 import { dayFromTimestamp } from './Dates';
 import { toDecimal } from './Decimals';
 import { getOHMUSDRate, getDiscountedPairUSD, getPairUSD, getXsushiUSDRate, getETHUSDRate, getPairWETH, getCVXUSDRate, getFXSUSDRate, getBTCUSDRate } from './Price';
@@ -70,41 +67,22 @@ function getOHMMarketcap(blockNumber: BigInt): BigDecimal{
     let marketCap = getOHMUSDRate(blockNumber).times(getCriculatingSupply(blockNumber, getTotalSupply(blockNumber)))
     log.debug("Market Cap current: {}", [marketCap.toString()])
 
-    //Used to calculate ciculating MarketCap of OHM v1 if v2 is already deployed
-    // if(blockNumber.gt(BigInt.fromString(OHMV2_ERC20_CONTRACT_BLOCK))){
-    //     let block = BigInt.fromI32(1)
-    //     let v1MarketCap = getOHMUSDRate(block).times(getCriculatingSupply(block, getTotalSupply(block)))
-    //     marketCap = marketCap.plus(v1MarketCap)
-    //     log.debug("Market Cap v1: {}", [v1MarketCap.toString()])
-    // }
-
     log.debug("Market Cap total: {}", [marketCap.toString()])
 
     return marketCap
 }
 
 function getTotalSupply(blockNumber: BigInt): BigDecimal{
-    let ohm_contract = OlympusERC20.bind(Address.fromString(OHM_ERC20_CONTRACT))
+    let ohm_contract = OlympusERC20.bind(Address.fromString(OHMV2_ERC20_CONTRACT))
     let total_supply = toDecimal(ohm_contract.totalSupply(), 9)
-    if(blockNumber.gt(BigInt.fromString(OHMV2_ERC20_CONTRACT_BLOCK))){
-        ohm_contract = OlympusERC20.bind(Address.fromString(OHMV2_ERC20_CONTRACT))
-        total_supply = toDecimal(ohm_contract.totalSupply(), 9)
-    }
 
     log.debug("Total Supply {}", [total_supply.toString()])
     return total_supply
 }
 
 function getCriculatingSupply(blockNumber: BigInt, total_supply: BigDecimal): BigDecimal{
-    let ohm_contract = OlympusERC20.bind(Address.fromString(OHM_ERC20_CONTRACT))
+    let ohm_contract = OlympusERC20.bind(Address.fromString(OHMV2_ERC20_CONTRACT))
     let circ_supply = total_supply.minus(toDecimal(ohm_contract.balanceOf(Address.fromString(DAO_WALLET)), 9))
-    circ_supply = circ_supply.minus(toDecimal(ohm_contract.balanceOf(Address.fromString(MIGRATION_CONTRACT)), 9))
-    
-    if(blockNumber.gt(BigInt.fromString(OHMV2_ERC20_CONTRACT_BLOCK))){
-        ohm_contract = OlympusERC20.bind(Address.fromString(OHMV2_ERC20_CONTRACT))
-        circ_supply = total_supply.minus(toDecimal(ohm_contract.balanceOf(Address.fromString(DAO_WALLET)), 9))
-        circ_supply = circ_supply.minus(toDecimal(ohm_contract.balanceOf(Address.fromString(MIGRATION_CONTRACT)), 9))
-    }
 
     log.debug("Circulating Supply {}", [circ_supply.toString()])
     return circ_supply
@@ -112,19 +90,8 @@ function getCriculatingSupply(blockNumber: BigInt, total_supply: BigDecimal): Bi
 
 function getSohmSupply(blockNumber: BigInt): BigDecimal{
     let sohm_supply = BigDecimal.fromString("0")
-
-    let sohm_contract_v1 = sOlympusERC20.bind(Address.fromString(SOHM_ERC20_CONTRACT))
-    sohm_supply = toDecimal(sohm_contract_v1.circulatingSupply(), 9)
-    
-    if(blockNumber.gt(BigInt.fromString(SOHM_ERC20_CONTRACTV2_BLOCK))){
-        let sohm_contract_v2 = sOlympusERC20V2.bind(Address.fromString(SOHM_ERC20_CONTRACTV2))
-        sohm_supply = sohm_supply.plus(toDecimal(sohm_contract_v2.circulatingSupply(), 9))
-    }
-
-    if(blockNumber.gt(BigInt.fromString(SOHM_ERC20_CONTRACTV3_BLOCK))){
-        let sohm_contract_v3 = sOlympusERC20V2.bind(Address.fromString(SOHM_ERC20_CONTRACTV3))
-        sohm_supply = toDecimal(sohm_contract_v3.circulatingSupply(), 9)
-    }
+    let sohm_contract_v3 = sOlympusERC20V2.bind(Address.fromString(SOHM_ERC20_CONTRACTV3))
+    sohm_supply = toDecimal(sohm_contract_v3.circulatingSupply(), 9)
     
     log.debug("sOHM Supply {}", [sohm_supply.toString()])
     return sohm_supply
@@ -140,31 +107,23 @@ function getMV_RFV(blockNumber: BigInt): BigDecimal[]{
     let wbtcERC20 = ERC20.bind(Address.fromString(WBTC_ERC20_CONTRACT))
     let ustERC20 = ERC20.bind(Address.fromString(UST_ERC20_CONTRACT))
 
-    let ohmdaiPair = UniswapV2Pair.bind(Address.fromString(SUSHI_OHMDAI_PAIR))
     let ohmdaiPairV2 = UniswapV2Pair.bind(Address.fromString(SUSHI_OHMDAI_PAIRV2))
     let ohmdaiOnsenMC = MasterChef.bind(Address.fromString(SUSHI_MASTERCHEF))
-    let ohmfraxPair = UniswapV2Pair.bind(Address.fromString(UNI_OHMFRAX_PAIR))
     let ohmfraxPairV2 = UniswapV2Pair.bind(Address.fromString(UNI_OHMFRAX_PAIRV2))
 
     let ohmlusdPair = UniswapV2Pair.bind(Address.fromString(SUSHI_OHMLUSD_PAIR))
-    let ohmethPair = UniswapV2Pair.bind(Address.fromString(SUSHI_OHMETH_PAIR))
     let ohmethPairv2 = UniswapV2Pair.bind(Address.fromString(SUSHI_OHMETH_PAIRV2))
 
-    let treasury_address = TREASURY_ADDRESS;
-    if(blockNumber.gt(BigInt.fromString(TREASURY_ADDRESS_V2_BLOCK))){
-        treasury_address = TREASURY_ADDRESS_V2;
-    }
-
-    let daiBalance = daiERC20.balanceOf(Address.fromString(treasury_address)).plus(daiERC20.balanceOf(Address.fromString(TREASURY_ADDRESS_V3)))
+    let daiBalance = daiERC20.balanceOf(Address.fromString(TREASURY_ADDRESS_V3))
     let adaiBalance = aDaiERC20.balanceOf(Address.fromString(AAVE_ALLOCATOR))
-    let fraxBalance = fraxERC20.balanceOf(Address.fromString(treasury_address)).plus(fraxERC20.balanceOf(Address.fromString(TREASURY_ADDRESS_V3)))
+    let fraxBalance = fraxERC20.balanceOf(Address.fromString(TREASURY_ADDRESS_V3))
     
     //Cross chain assets that can not be tracked right now 20000000
     // tokemak 7.5 MM
     // butterfly 10% MC = 45MM
     let volatile_value = BigDecimal.fromString("72500000") 
 
-    let xSushiBalance = xSushiERC20.balanceOf(Address.fromString(treasury_address)).plus(xSushiERC20.balanceOf(Address.fromString(TREASURY_ADDRESS_V3)))
+    let xSushiBalance = xSushiERC20.balanceOf(Address.fromString(TREASURY_ADDRESS_V3))
     let xSushi_value = toDecimal(xSushiBalance, 18).times(getXsushiUSDRate())
     volatile_value = volatile_value.plus(xSushi_value)
     log.debug("xSushi_value {}", [xSushi_value.toString()])
@@ -173,84 +132,63 @@ function getMV_RFV(blockNumber: BigInt): BigDecimal[]{
 
     let cvxERC20 = ERC20.bind(Address.fromString(CVX_ERC20_CONTRACT))
 
-    if(blockNumber.gt(BigInt.fromString(CVX_ERC20_CONTRACT_BLOCK))){
-        let cvxBalance = cvxERC20.balanceOf(Address.fromString(treasury_address)).plus(cvxERC20.balanceOf(Address.fromString(TREASURY_ADDRESS_V3)))
-        log.debug("CVXbalance {}", [cvxBalance.toString()])
-        cvx_value = toDecimal(cvxBalance, 18).times(getCVXUSDRate())
-    }
+    let cvxBalance = cvxERC20.balanceOf(Address.fromString(TREASURY_ADDRESS_V3))
+    log.debug("CVXbalance {}", [cvxBalance.toString()])
+    cvx_value = toDecimal(cvxBalance, 18).times(getCVXUSDRate())
 
     let vlERC20 = ERC20.bind(Address.fromString(VLCVX_ERC20_CONTRACT))
-    if(blockNumber.gt(BigInt.fromString(VLCVX_ERC20_CONTRACT_BLOCK))){
+    
         let vlCVXbalance = vlERC20.balanceOf(Address.fromString(CONVEX_CVX_ALLOCATOR))
         log.debug("vlCVXbalance {}", [vlCVXbalance.toString()])
         cvx_value = cvx_value.plus(toDecimal(vlCVXbalance, 18).times(getCVXUSDRate()))
-    }
+    
     log.debug("cvx_value {}", [cvx_value.toString()])
     volatile_value = volatile_value.plus(cvx_value)
 
     let fxs_value = BigDecimal.fromString("0")
     let fxsERC20 = ERC20.bind(Address.fromString(FXS_ERC20_CONTRACT))
-    if(blockNumber.gt(BigInt.fromString(UNI_FXS_ETH_PAIR_BLOCK))){
-        let fxsbalance = fxsERC20.balanceOf(Address.fromString(TREASURY_ADDRESS_V2)).plus(fxsERC20.balanceOf(Address.fromString(TREASURY_ADDRESS_V3)))
+    
+        let fxsbalance = fxsERC20.balanceOf(Address.fromString(TREASURY_ADDRESS_V3))
         fxs_value = toDecimal(fxsbalance, 18).times(getFXSUSDRate())
         log.debug("fxs_value {}", [fxs_value.toString()])
         volatile_value = volatile_value.plus(fxs_value)
-    }
 
     let vefxs_value = BigDecimal.fromString("0")
     let veFXS = VeFXS.bind(Address.fromString(VEFXSERC20_CONTRACT))
-    if(blockNumber.gt(BigInt.fromString(VEFXSERC20_BLOCK))){
+    
         let vefxsbalance = veFXS.locked(Address.fromString(VEFXS_ALLOCATOR)).value0
         vefxs_value = toDecimal(vefxsbalance, 18).times(getFXSUSDRate())
         log.debug("vefxs_value {}", [vefxs_value.toString()])
         volatile_value = volatile_value.plus(vefxs_value)
-    }
 
 
 
 
-    let wethBalance = wethERC20.balanceOf(Address.fromString(treasury_address)).plus(wethERC20.balanceOf(Address.fromString(TREASURY_ADDRESS_V3)))
+    let wethBalance = wethERC20.balanceOf(Address.fromString(TREASURY_ADDRESS_V3))
     let weth_value = toDecimal(wethBalance, 18).times(getETHUSDRate())
 
-    let wbtcBalance = wbtcERC20.balanceOf(Address.fromString(treasury_address)).plus(wbtcERC20.balanceOf(Address.fromString(TREASURY_ADDRESS_V3)))
+    let wbtcBalance = wbtcERC20.balanceOf(Address.fromString(TREASURY_ADDRESS_V3))
     let wbtc_value = toDecimal(wbtcBalance, 8).times(getBTCUSDRate())
 
     let lusdBalance = BigInt.fromI32(0)
-    if(blockNumber.gt(BigInt.fromString(LUSD_ERC20_CONTRACTV2_BLOCK))){
-        lusdBalance = lusdERC20.balanceOf(Address.fromString(treasury_address)).plus(lusdERC20.balanceOf(Address.fromString(TREASURY_ADDRESS_V3)))
-    }
+
+    lusdBalance = lusdERC20.balanceOf(Address.fromString(TREASURY_ADDRESS_V3))
+    
 
     let ustBalance = BigInt.fromI32(0)
-    if(blockNumber.gt(BigInt.fromString(UST_ERC20_CONTRACT_BLOCK))){
-        ustBalance = ustERC20.balanceOf(Address.fromString(treasury_address)).plus(ustERC20.balanceOf(Address.fromString(TREASURY_ADDRESS_V3))).times(BigInt.fromString("1000000000000"))
-    }
+
+    ustBalance = ustERC20.balanceOf(Address.fromString(TREASURY_ADDRESS_V3)).times(BigInt.fromString("1000000000000"))
+    
 
     //CONVEX Frax allocator
     // TODO add to mv and mvrfv
     let convexrfv =  BigInt.fromString("0");
-    if(blockNumber.gt(BigInt.fromString(CONVEX_ALLOCATOR1_BLOCK))){
-        let allocator1 = ConvexAllocator.bind(Address.fromString(CONVEX_ALLOCATOR1))
-        convexrfv = convexrfv.plus(allocator1.totalValueDeployed())
-    }
-    if(blockNumber.gt(BigInt.fromString(CONVEX_ALLOCATOR2_BLOCK))){
-        let allocator2 = ConvexAllocator.bind(Address.fromString(CONVEX_ALLOCATOR2))
-        convexrfv = convexrfv.plus(allocator2.totalValueDeployed())
-    }
-    if(blockNumber.gt(BigInt.fromString(CONVEX_ALLOCATOR3_BLOCK))){
-        let allocator3 = ConvexAllocator.bind(Address.fromString(CONVEX_ALLOCATOR3))
-        convexrfv = convexrfv.plus(allocator3.totalValueDeployed())
-    }
+    let allocator3 = ConvexAllocator.bind(Address.fromString(CONVEX_ALLOCATOR3))
+    convexrfv = convexrfv.plus(allocator3.totalValueDeployed())
 
     //Multiplied by 10e9 for consistency
     convexrfv = convexrfv.times(BigInt.fromString("1000000000"))
     fraxBalance = fraxBalance.plus(convexrfv)
-
-    //OHMDAI
-    let ohmdaiSushiBalance = ohmdaiPair.balanceOf(Address.fromString(treasury_address)).plus(ohmdaiPair.balanceOf(Address.fromString(TREASURY_ADDRESS_V3)))
-    let ohmdaiOnsenBalance = ohmdaiOnsenMC.userInfo(BigInt.fromI32(OHMDAI_ONSEN_ID), Address.fromString(ONSEN_ALLOCATOR)).value0
-    let ohmdaiBalance = ohmdaiSushiBalance.plus(ohmdaiOnsenBalance)
-    let ohmdaiTotalLP = toDecimal(ohmdaiPair.totalSupply(), 18)
-
 
     //OHMDAIv2
     let ohmdaiSushiBalancev2 = BigInt.fromI32(0)
@@ -258,33 +196,21 @@ function getMV_RFV(blockNumber: BigInt): BigDecimal[]{
     let ohmdai_rfvv2 = BigDecimal.fromString("0")
     let ohmdaiTotalLPv2 = BigDecimal.fromString("0")
     let ohmdaiPOLv2 = BigDecimal.fromString("0")
-    if(blockNumber.gt(BigInt.fromString(SUSHI_OHMDAI_PAIRV2_BLOCK))){
-        ohmdaiSushiBalancev2 = ohmdaiPairV2.balanceOf(Address.fromString(TREASURY_ADDRESS_V3))
-        ohmdai_valuev2 = getPairUSD(ohmdaiSushiBalancev2, SUSHI_OHMDAI_PAIRV2, blockNumber)
-        ohmdai_rfvv2 = getDiscountedPairUSD(ohmdaiSushiBalancev2, SUSHI_OHMDAI_PAIRV2)
-        ohmdaiTotalLPv2 = toDecimal(ohmdaiPairV2.totalSupply(), 18)
-        if (ohmdaiTotalLPv2.gt(BigDecimal.fromString("0")) &&  ohmdaiSushiBalancev2.gt(BigInt.fromI32(0))){
+    ohmdaiSushiBalancev2 = ohmdaiPairV2.balanceOf(Address.fromString(TREASURY_ADDRESS_V3))
+    ohmdai_valuev2 = getPairUSD(ohmdaiSushiBalancev2, SUSHI_OHMDAI_PAIRV2, blockNumber)
+    ohmdai_rfvv2 = getDiscountedPairUSD(ohmdaiSushiBalancev2, SUSHI_OHMDAI_PAIRV2)
+    ohmdaiTotalLPv2 = toDecimal(ohmdaiPairV2.totalSupply(), 18)
+    if (ohmdaiTotalLPv2.gt(BigDecimal.fromString("0")) &&  ohmdaiSushiBalancev2.gt(BigInt.fromI32(0))){
             ohmdaiPOLv2 = toDecimal(ohmdaiSushiBalancev2, 18).div(ohmdaiTotalLPv2).times(BigDecimal.fromString("100"))
         }
-    }
 
-    let ohmdaiPOL = toDecimal(ohmdaiBalance, 18).div(ohmdaiTotalLP).times(BigDecimal.fromString("100"))
-    if(blockNumber.gt(BigInt.fromString(SUSHI_OHMDAI_PAIRV2_BLOCK))){
-        ohmdaiPOL = toDecimal(ohmdaiSushiBalancev2, 18).div(ohmdaiTotalLPv2).times(BigDecimal.fromString("100"))
-    }
-    let ohmdai_value = getPairUSD(ohmdaiBalance, SUSHI_OHMDAI_PAIR, blockNumber)
-    log.debug("ohmdai_value {}", [ohmdai_value.toString()])
+    let ohmdaiPOL = toDecimal(ohmdaiSushiBalancev2, 18).div(ohmdaiTotalLPv2).times(BigDecimal.fromString("100"))
 
-    if(blockNumber.gt(BigInt.fromString(SUSHI_OHMDAI_PAIRV2_BLOCK))){
-        let ohmdai_v2value = getPairUSD(ohmdaiSushiBalancev2, SUSHI_OHMDAI_PAIRV2, blockNumber)
-        log.debug("ohmdai_v2value {}", [ohmdai_v2value.toString()])
-        ohmdai_value = ohmdai_value.plus(ohmdai_v2value)
-    }
-
-    let ohmdai_rfv = getDiscountedPairUSD(ohmdaiBalance, SUSHI_OHMDAI_PAIR)
-    if(blockNumber.gt(BigInt.fromString(SUSHI_OHMDAI_PAIRV2_BLOCK))){
-        ohmdai_rfv = ohmdai_rfv.plus(getDiscountedPairUSD(ohmdaiSushiBalancev2, SUSHI_OHMDAI_PAIRV2))
-    }
+    let ohmdai_v2value = getPairUSD(ohmdaiSushiBalancev2, SUSHI_OHMDAI_PAIRV2, blockNumber)
+    log.debug("ohmdai_v2value {}", [ohmdai_v2value.toString()])
+    let ohmdai_value = (ohmdai_v2value)
+    
+    let ohmdai_rfv = (getDiscountedPairUSD(ohmdaiSushiBalancev2, SUSHI_OHMDAI_PAIRV2))
 
     //OHMFRAX
     let ohmfraxBalance = BigInt.fromI32(0)
@@ -292,23 +218,13 @@ function getMV_RFV(blockNumber: BigInt): BigDecimal[]{
     let ohmfrax_rfv = BigDecimal.fromString("0")
     let ohmfraxTotalLP = BigDecimal.fromString("0")
     let ohmfraxPOL = BigDecimal.fromString("0")
-    if(blockNumber.gt(BigInt.fromString(UNI_OHMFRAX_PAIR_BLOCK))){
-        ohmfraxBalance = ohmfraxPair.balanceOf(Address.fromString(treasury_address))
-        ohmfrax_value = getPairUSD(ohmfraxBalance, UNI_OHMFRAX_PAIR, blockNumber)
-        ohmfrax_rfv = ohmfrax_rfv.plus(getDiscountedPairUSD(ohmfraxBalance, UNI_OHMFRAX_PAIR))
-        ohmfraxTotalLP = toDecimal(ohmfraxPair.totalSupply(), 18)
-        if (ohmfraxTotalLP.gt(BigDecimal.fromString("0")) &&  ohmfraxBalance.gt(BigInt.fromI32(0))){
-            ohmfraxPOL = ohmfraxPOL.plus(toDecimal(ohmfraxBalance, 18).div(ohmfraxTotalLP).times(BigDecimal.fromString("100")))
-        }
-    }
-    if(blockNumber.gt(BigInt.fromString(UNI_OHMFRAX_PAIR_BLOCKV2))){
-        ohmfraxBalance = ohmfraxPairV2.balanceOf(Address.fromString(TREASURY_ADDRESS_V3))
-        ohmfrax_value = ohmfrax_rfv.plus(getPairUSD(ohmfraxBalance, UNI_OHMFRAX_PAIRV2, blockNumber))
-        ohmfrax_rfv = ohmfrax_rfv.plus(getDiscountedPairUSD(ohmfraxBalance, UNI_OHMFRAX_PAIRV2))
-        ohmfraxTotalLP = toDecimal(ohmfraxPairV2.totalSupply(), 18)
-        if (ohmfraxTotalLP.gt(BigDecimal.fromString("0")) &&  ohmfraxBalance.gt(BigInt.fromI32(0))){
-            ohmfraxPOL = ohmfraxPOL.plus(toDecimal(ohmfraxBalance, 18).div(ohmfraxTotalLP).times(BigDecimal.fromString("100")))
-        }
+
+    ohmfraxBalance = ohmfraxPairV2.balanceOf(Address.fromString(TREASURY_ADDRESS_V3))
+    ohmfrax_value = ohmfrax_rfv.plus(getPairUSD(ohmfraxBalance, UNI_OHMFRAX_PAIRV2, blockNumber))
+    ohmfrax_rfv = ohmfrax_rfv.plus(getDiscountedPairUSD(ohmfraxBalance, UNI_OHMFRAX_PAIRV2))
+    ohmfraxTotalLP = toDecimal(ohmfraxPairV2.totalSupply(), 18)
+    if (ohmfraxTotalLP.gt(BigDecimal.fromString("0")) &&  ohmfraxBalance.gt(BigInt.fromI32(0))){
+        ohmfraxPOL = ohmfraxPOL.plus(toDecimal(ohmfraxBalance, 18).div(ohmfraxTotalLP).times(BigDecimal.fromString("100")))
     }
 
     //OHMLUSD
@@ -317,8 +233,8 @@ function getMV_RFV(blockNumber: BigInt): BigDecimal[]{
     let ohmlusd_rfv = BigDecimal.fromString("0")
     let ohmlusdTotalLP = BigDecimal.fromString("0")
     let ohmlusdPOL = BigDecimal.fromString("0")
-    if(blockNumber.gt(BigInt.fromString(UNI_OHMLUSD_PAIR_BLOCK))){
-        ohmlusdBalance = ohmlusdPair.balanceOf(Address.fromString(treasury_address)).plus(ohmlusdPair.balanceOf(Address.fromString(TREASURY_ADDRESS_V3)))
+        
+    ohmlusdBalance = (ohmlusdPair.balanceOf(Address.fromString(TREASURY_ADDRESS_V3)))
 
         let ohmlusdOnsenBalance = ohmdaiOnsenMC.userInfo(BigInt.fromI32(OHMLUSD_ONSEN_ID), Address.fromString(ONSEN_ALLOCATOR)).value0
         ohmlusdBalance = ohmlusdBalance.plus(ohmlusdOnsenBalance)
@@ -332,7 +248,6 @@ function getMV_RFV(blockNumber: BigInt): BigDecimal[]{
         if (ohmlusdTotalLP.gt(BigDecimal.fromString("0")) &&  ohmlusdBalance.gt(BigInt.fromI32(0))){
             ohmlusdPOL = toDecimal(ohmlusdBalance, 18).div(ohmlusdTotalLP).times(BigDecimal.fromString("100"))
         }
-    }
 
     //OHMETH
     let ohmethBalance = BigInt.fromI32(0)
@@ -340,21 +255,7 @@ function getMV_RFV(blockNumber: BigInt): BigDecimal[]{
     let ohmeth_rfv = BigDecimal.fromString("0")
     let ohmethTotalLP = BigDecimal.fromString("0")
     let ohmethPOL = BigDecimal.fromString("0")
-    if(blockNumber.gt(BigInt.fromString(SUSHI_OHMETH_PAIR_BLOCK))){
-        ohmethBalance = ohmethPair.balanceOf(Address.fromString(treasury_address)).plus(ohmethPair.balanceOf(Address.fromString(TREASURY_ADDRESS_V3)))
-        log.debug("ohmethBalance {}", [ohmethBalance.toString()])
 
-        ohmeth_value = getPairWETH(ohmethBalance, SUSHI_OHMETH_PAIR, blockNumber)
-        log.debug("ohmeth_value {}", [ohmeth_value.toString()])
-
-        ohmeth_rfv = getDiscountedPairUSD(ohmethBalance, SUSHI_OHMETH_PAIR)
-        ohmethTotalLP = toDecimal(ohmethPair.totalSupply(), 18)
-        if (ohmethTotalLP.gt(BigDecimal.fromString("0")) &&  ohmethBalance.gt(BigInt.fromI32(0))){
-            ohmethPOL = toDecimal(ohmethBalance, 18).div(ohmethTotalLP).times(BigDecimal.fromString("100"))
-        }
-    }
-
-    if(blockNumber.gt(BigInt.fromString(SUSHI_OHMETH_PAIR_BLOCKV2))){
         ohmethBalance = ohmethPairv2.balanceOf(Address.fromString(TREASURY_ADDRESS_V3))
         log.debug("ohmethBalance {}", [ohmethBalance.toString()])
 
@@ -366,7 +267,6 @@ function getMV_RFV(blockNumber: BigInt): BigDecimal[]{
         if (ohmethTotalLP.gt(BigDecimal.fromString("0")) &&  ohmethBalance.gt(BigInt.fromI32(0))){
             ohmethPOL = toDecimal(ohmethBalance, 18).div(ohmethTotalLP).times(BigDecimal.fromString("100"))
         }
-    }
 
     let stableValue = daiBalance.plus(fraxBalance).plus(adaiBalance).plus(lusdBalance).plus(ustBalance)
     let stableValueDecimal = toDecimal(stableValue, 18)
@@ -430,29 +330,10 @@ function getMV_RFV(blockNumber: BigInt): BigDecimal[]{
 function getNextOHMRebase(blockNumber: BigInt): BigDecimal{
     let next_distribution = BigDecimal.fromString("0")
 
-    let staking_contract_v1 = OlympusStakingV1.bind(Address.fromString(STAKING_CONTRACT_V1))   
-    let response = staking_contract_v1.try_ohmToDistributeNextEpoch()
-    if(response.reverted==false){
-        next_distribution = toDecimal(response.value,9)
-        log.debug("next_distribution v1 {}", [next_distribution.toString()])
-    }
-    else{
-        log.debug("reverted staking_contract_v1", []) 
-    }
-
-    if(blockNumber.gt(BigInt.fromString(STAKING_CONTRACT_V2_BLOCK))){
-        let staking_contract_v2 = OlympusStakingV2.bind(Address.fromString(STAKING_CONTRACT_V2))
-        let distribution_v2 = toDecimal(staking_contract_v2.epoch().value3,9)
-        log.debug("next_distribution v2 {}", [distribution_v2.toString()])
-        next_distribution = next_distribution.plus(distribution_v2)
-    }
-
-    if(blockNumber.gt(BigInt.fromString(STAKING_CONTRACT_V3_BLOCK))){
         let staking_contract_v3 = OlympusStakingV3.bind(Address.fromString(STAKING_CONTRACT_V3))
         let distribution_v3 = toDecimal(staking_contract_v3.epoch().value3,9)
         log.debug("next_distribution v3 {}", [distribution_v3.toString()])
         next_distribution = next_distribution.plus(distribution_v3)
-    }
 
     log.debug("next_distribution total {}", [next_distribution.toString()])
 
@@ -499,14 +380,10 @@ function getRunway(totalSupply: BigDecimal, rfv: BigDecimal, rebase: BigDecimal,
         let runway70k_num = (Math.log(treasury_runway) / Math.log(1+0.00600065))/3;
         let runway100k_num = (Math.log(treasury_runway) / Math.log(1+0.00632839))/3;
         let nextEpochRebase_number = Number.parseFloat(rebase.toString())/100
-        if(block.number.toI32() > DISTRIBUTOR_CONTRACT_BLOCK){
-            let distributorContract = Distributor.bind(Address.fromString(DISTRIBUTOR_CONTRACT))
-            nextEpochRebase_number = Number.parseFloat(toDecimal(distributorContract.info(BigInt.fromI32(4)).value0,6).toString())
-        }
-        if(block.number.toI32() > DISTRIBUTOR_CONTRACT_BLOCK_V2){
+
             let distributorContract_v2 = Distributor.bind(Address.fromString(DISTRIBUTOR_CONTRACT_V2))
             nextEpochRebase_number = Number.parseFloat(toDecimal(distributorContract_v2.info(BigInt.fromI32(0)).value0,6).toString())
-        }
+            
         log.debug("Runway rebase", [nextEpochRebase_number.toString()])
 
         let runwayCurrent_num = (Math.log(treasury_runway) / Math.log(1+nextEpochRebase_number))/3;

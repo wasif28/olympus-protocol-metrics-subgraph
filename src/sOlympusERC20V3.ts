@@ -3,7 +3,7 @@ import { OlympusERC20 } from '../generated/ProtocolMetrics/OlympusERC20'
 import { createDailyStakingReward } from './utils/DailyStakingReward'
 import { Rebase } from '../generated/schema'
 import { Address, BigInt } from '@graphprotocol/graph-ts'
-import { OHMV2_ERC20_CONTRACT, OHM_ERC20_CONTRACT, STAKING_CONTRACT_V2, STAKING_CONTRACT_V3 } from './utils/Constants'
+import { OHMV2_ERC20_CONTRACT, STAKING_CONTRACT_V3 } from './utils/Constants'
 import { toDecimal } from './utils/Decimals'
 import { getOHMUSDRate } from './utils/Price';
 import { updateProtocolMetrics } from './utils/ProtocolMetrics'

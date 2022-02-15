@@ -1,5 +1,5 @@
 import {
-    SUSHI_OHMDAI_PAIR, SUSHI_XSUSHI_ETH_PAIR, SUSHI_USDC_ETH_PAIR, SUSHI_CVX_ETH_PAIR, SUSHI_OHMDAI_PAIRV2_BLOCK, SUSHI_OHMDAI_PAIRV2, UNI_FXS_ETH_PAIR, UNI_ETH_WBTC_PAIR
+    SUSHI_XSUSHI_ETH_PAIR, SUSHI_USDC_ETH_PAIR, SUSHI_CVX_ETH_PAIR, SUSHI_OHMDAI_PAIRV2, UNI_FXS_ETH_PAIR, UNI_ETH_WBTC_PAIR
 } from './Constants'
 import { Address, BigDecimal, BigInt, log } from '@graphprotocol/graph-ts'
 import { UniswapV2Pair } from '../../generated/ProtocolMetrics/UniswapV2Pair';
@@ -39,11 +39,7 @@ export function getBTCUSDRate(): BigDecimal {
 }
 
 export function getOHMUSDRate(block: BigInt): BigDecimal {
-    let pair = UniswapV2Pair.bind(Address.fromString(SUSHI_OHMDAI_PAIR))
-
-    if(block.gt(BigInt.fromString(SUSHI_OHMDAI_PAIRV2_BLOCK))){
-        pair = UniswapV2Pair.bind(Address.fromString(SUSHI_OHMDAI_PAIRV2))
-    }
+    let pair = UniswapV2Pair.bind(Address.fromString(SUSHI_OHMDAI_PAIRV2))
 
     let reserves = pair.getReserves()
     let reserve0 = reserves.value0.toBigDecimal()
