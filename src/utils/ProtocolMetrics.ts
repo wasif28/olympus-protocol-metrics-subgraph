@@ -15,7 +15,7 @@ import { AAVE_ALLOCATOR, ADAI_ERC20_CONTRACT, ERC20DAI_CONTRACT, ERC20FRAX_CONTR
 import { dayFromTimestamp } from './Dates';
 import { toDecimal } from './Decimals';
 import { getOHMUSDRate, getDiscountedPairUSD, getPairUSD, getXsushiUSDRate, getETHUSDRate, getPairWETH, getCVXUSDRate, getFXSUSDRate, getBTCUSDRate } from './Price';
-import { updateBondDiscounts } from './BondDiscounts';
+// import { updateBondDiscounts } from './BondDiscounts';
 
 export function loadOrCreateProtocolMetric(timestamp: BigInt): ProtocolMetric{
     let dayTimestamp = dayFromTimestamp(timestamp);
@@ -472,7 +472,7 @@ export function updateProtocolMetrics(block: ethereum.Block): void{
   
     pm.save()
     
-    updateBondDiscounts(blockNumber)
+    // updateBondDiscounts(blockNumber)
 }
 
 export function handleMetrics(call: StakeCall): void {
