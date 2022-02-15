@@ -14,7 +14,7 @@ dataSources:
       startBlock: 10135124
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.4
+      apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
         - sOlympusERC20V1
@@ -90,7 +90,7 @@ dataSources:
       startBlock: 10135124
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.4
+      apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
         - sOlympusERC20V2
@@ -166,7 +166,7 @@ dataSources:
       startBlock: 10135124
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.4
+      apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
         - sOlympusERC20V3
@@ -244,7 +244,7 @@ dataSources:
       startBlock: 10135124
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.4
+      apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
         - ProtocolMetrics
