@@ -29,6 +29,8 @@ dataSources:
           file: ./abis/UniswapV2Pair.json
         - name: UniswapV3Pair
           file: ./abis/UniswapV3Pair.json
+        - name: ConvexAllocator
+          file: ./abis/ConvexAllocator.json
         - name: BondingCalculator
           file: ./abis/BondingCalculator.json
         - name: ERC20
@@ -67,12 +69,16 @@ dataSources:
           file: ./abis/UniswapV2Pair.json
         - name: UniswapV3Pair
           file: ./abis/UniswapV3Pair.json
+        - name: ConvexAllocator
+          file: ./abis/ConvexAllocator.json
         - name: BondingCalculator
           file: ./abis/BondingCalculator.json
         - name: ERC20
           file: ./abis/ERC20.json
         - name: MasterChef
           file: ./abis/MasterChef.json
+        - name: VeFXS
+          file: ./abis/VeFXS.json
         - name: Distributor
           file: ./abis/Distributor.json
       callHandlers:
