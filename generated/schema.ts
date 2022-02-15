@@ -6,7 +6,6 @@ import {
   Value,
   ValueKind,
   store,
-  Address,
   Bytes,
   BigInt,
   BigDecimal
@@ -16,26 +15,33 @@ export class DailyBond extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
+
+    this.set("timestamp", Value.fromBigInt(BigInt.zero()));
+    this.set("token", Value.fromString(""));
+    this.set("amount", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set("value", Value.fromBigDecimal(BigDecimal.zero()));
   }
 
   save(): void {
     let id = this.get("id");
-    assert(id !== null, "Cannot save DailyBond entity without an ID");
-    assert(
-      id.kind == ValueKind.STRING,
-      "Cannot save DailyBond entity with non-string ID. " +
-        'Considering using .toHex() to convert the "id" to a string.'
-    );
-    store.set("DailyBond", id.toString(), this);
+    assert(id != null, "Cannot save DailyBond entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        "Cannot save DailyBond entity with non-string ID. " +
+          'Considering using .toHex() to convert the "id" to a string.'
+      );
+      store.set("DailyBond", id.toString(), this);
+    }
   }
 
   static load(id: string): DailyBond | null {
-    return store.get("DailyBond", id) as DailyBond | null;
+    return changetype<DailyBond | null>(store.get("DailyBond", id));
   }
 
   get id(): string {
     let value = this.get("id");
-    return value.toString();
+    return value!.toString();
   }
 
   set id(value: string) {
@@ -44,7 +50,7 @@ export class DailyBond extends Entity {
 
   get timestamp(): BigInt {
     let value = this.get("timestamp");
-    return value.toBigInt();
+    return value!.toBigInt();
   }
 
   set timestamp(value: BigInt) {
@@ -53,7 +59,7 @@ export class DailyBond extends Entity {
 
   get token(): string {
     let value = this.get("token");
-    return value.toString();
+    return value!.toString();
   }
 
   set token(value: string) {
@@ -62,7 +68,7 @@ export class DailyBond extends Entity {
 
   get amount(): BigDecimal {
     let value = this.get("amount");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set amount(value: BigDecimal) {
@@ -71,7 +77,7 @@ export class DailyBond extends Entity {
 
   get value(): BigDecimal {
     let value = this.get("value");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set value(value: BigDecimal) {
@@ -83,26 +89,35 @@ export class Rebase extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
+
+    this.set("amount", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set("stakedOhms", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set("percentage", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set("contract", Value.fromString(""));
+    this.set("timestamp", Value.fromBigInt(BigInt.zero()));
+    this.set("value", Value.fromBigDecimal(BigDecimal.zero()));
   }
 
   save(): void {
     let id = this.get("id");
-    assert(id !== null, "Cannot save Rebase entity without an ID");
-    assert(
-      id.kind == ValueKind.STRING,
-      "Cannot save Rebase entity with non-string ID. " +
-        'Considering using .toHex() to convert the "id" to a string.'
-    );
-    store.set("Rebase", id.toString(), this);
+    assert(id != null, "Cannot save Rebase entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        "Cannot save Rebase entity with non-string ID. " +
+          'Considering using .toHex() to convert the "id" to a string.'
+      );
+      store.set("Rebase", id.toString(), this);
+    }
   }
 
   static load(id: string): Rebase | null {
-    return store.get("Rebase", id) as Rebase | null;
+    return changetype<Rebase | null>(store.get("Rebase", id));
   }
 
   get id(): string {
     let value = this.get("id");
-    return value.toString();
+    return value!.toString();
   }
 
   set id(value: string) {
@@ -111,7 +126,7 @@ export class Rebase extends Entity {
 
   get amount(): BigDecimal {
     let value = this.get("amount");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set amount(value: BigDecimal) {
@@ -120,7 +135,7 @@ export class Rebase extends Entity {
 
   get stakedOhms(): BigDecimal {
     let value = this.get("stakedOhms");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set stakedOhms(value: BigDecimal) {
@@ -129,7 +144,7 @@ export class Rebase extends Entity {
 
   get percentage(): BigDecimal {
     let value = this.get("percentage");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set percentage(value: BigDecimal) {
@@ -138,7 +153,7 @@ export class Rebase extends Entity {
 
   get contract(): string {
     let value = this.get("contract");
-    return value.toString();
+    return value!.toString();
   }
 
   set contract(value: string) {
@@ -147,7 +162,7 @@ export class Rebase extends Entity {
 
   get timestamp(): BigInt {
     let value = this.get("timestamp");
-    return value.toBigInt();
+    return value!.toBigInt();
   }
 
   set timestamp(value: BigInt) {
@@ -156,7 +171,7 @@ export class Rebase extends Entity {
 
   get value(): BigDecimal {
     let value = this.get("value");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set value(value: BigDecimal) {
@@ -168,26 +183,34 @@ export class DailyStakingReward extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
+
+    this.set("timestamp", Value.fromBigInt(BigInt.zero()));
+    this.set("amount", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set("value", Value.fromBigDecimal(BigDecimal.zero()));
   }
 
   save(): void {
     let id = this.get("id");
-    assert(id !== null, "Cannot save DailyStakingReward entity without an ID");
-    assert(
-      id.kind == ValueKind.STRING,
-      "Cannot save DailyStakingReward entity with non-string ID. " +
-        'Considering using .toHex() to convert the "id" to a string.'
-    );
-    store.set("DailyStakingReward", id.toString(), this);
+    assert(id != null, "Cannot save DailyStakingReward entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        "Cannot save DailyStakingReward entity with non-string ID. " +
+          'Considering using .toHex() to convert the "id" to a string.'
+      );
+      store.set("DailyStakingReward", id.toString(), this);
+    }
   }
 
   static load(id: string): DailyStakingReward | null {
-    return store.get("DailyStakingReward", id) as DailyStakingReward | null;
+    return changetype<DailyStakingReward | null>(
+      store.get("DailyStakingReward", id)
+    );
   }
 
   get id(): string {
     let value = this.get("id");
-    return value.toString();
+    return value!.toString();
   }
 
   set id(value: string) {
@@ -196,7 +219,7 @@ export class DailyStakingReward extends Entity {
 
   get timestamp(): BigInt {
     let value = this.get("timestamp");
-    return value.toBigInt();
+    return value!.toBigInt();
   }
 
   set timestamp(value: BigInt) {
@@ -205,7 +228,7 @@ export class DailyStakingReward extends Entity {
 
   get amount(): BigDecimal {
     let value = this.get("amount");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set amount(value: BigDecimal) {
@@ -214,7 +237,7 @@ export class DailyStakingReward extends Entity {
 
   get value(): BigDecimal {
     let value = this.get("value");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set value(value: BigDecimal) {
@@ -230,22 +253,24 @@ export class Token extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id !== null, "Cannot save Token entity without an ID");
-    assert(
-      id.kind == ValueKind.STRING,
-      "Cannot save Token entity with non-string ID. " +
-        'Considering using .toHex() to convert the "id" to a string.'
-    );
-    store.set("Token", id.toString(), this);
+    assert(id != null, "Cannot save Token entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        "Cannot save Token entity with non-string ID. " +
+          'Considering using .toHex() to convert the "id" to a string.'
+      );
+      store.set("Token", id.toString(), this);
+    }
   }
 
   static load(id: string): Token | null {
-    return store.get("Token", id) as Token | null;
+    return changetype<Token | null>(store.get("Token", id));
   }
 
   get id(): string {
     let value = this.get("id");
-    return value.toString();
+    return value!.toString();
   }
 
   set id(value: string) {
@@ -257,26 +282,95 @@ export class ProtocolMetric extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
+
+    this.set("timestamp", Value.fromBigInt(BigInt.zero()));
+    this.set("ohmCirculatingSupply", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set("sOhmCirculatingSupply", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set("totalSupply", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set("ohmPrice", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set("marketCap", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set("totalValueLocked", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set("treasuryRiskFreeValue", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set("treasuryMarketValue", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set("nextEpochRebase", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set("nextDistributedOhm", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set(
+      "treasuryDaiRiskFreeValue",
+      Value.fromBigDecimal(BigDecimal.zero())
+    );
+    this.set(
+      "treasuryFraxRiskFreeValue",
+      Value.fromBigDecimal(BigDecimal.zero())
+    );
+    this.set(
+      "treasuryLusdRiskFreeValue",
+      Value.fromBigDecimal(BigDecimal.zero())
+    );
+    this.set(
+      "treasuryWETHRiskFreeValue",
+      Value.fromBigDecimal(BigDecimal.zero())
+    );
+    this.set("treasuryDaiMarketValue", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set(
+      "treasuryFraxMarketValue",
+      Value.fromBigDecimal(BigDecimal.zero())
+    );
+    this.set(
+      "treasuryLusdMarketValue",
+      Value.fromBigDecimal(BigDecimal.zero())
+    );
+    this.set("treasuryUstMarketValue", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set(
+      "treasuryXsushiMarketValue",
+      Value.fromBigDecimal(BigDecimal.zero())
+    );
+    this.set(
+      "treasuryWETHMarketValue",
+      Value.fromBigDecimal(BigDecimal.zero())
+    );
+    this.set(
+      "treasuryWBTCMarketValue",
+      Value.fromBigDecimal(BigDecimal.zero())
+    );
+    this.set("treasuryCVXMarketValue", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set(
+      "treasuryOtherMarketValue",
+      Value.fromBigDecimal(BigDecimal.zero())
+    );
+    this.set("treasuryLPValue", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set("treasuryStableBacking", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set(
+      "treasuryVolatileBacking",
+      Value.fromBigDecimal(BigDecimal.zero())
+    );
+    this.set("treasuryTotalBacking", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set("currentAPY", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set("treasuryOhmDaiPOL", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set("treasuryOhmFraxPOL", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set("treasuryOhmLusdPOL", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set("treasuryOhmEthPOL", Value.fromBigDecimal(BigDecimal.zero()));
   }
 
   save(): void {
     let id = this.get("id");
-    assert(id !== null, "Cannot save ProtocolMetric entity without an ID");
-    assert(
-      id.kind == ValueKind.STRING,
-      "Cannot save ProtocolMetric entity with non-string ID. " +
-        'Considering using .toHex() to convert the "id" to a string.'
-    );
-    store.set("ProtocolMetric", id.toString(), this);
+    assert(id != null, "Cannot save ProtocolMetric entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        "Cannot save ProtocolMetric entity with non-string ID. " +
+          'Considering using .toHex() to convert the "id" to a string.'
+      );
+      store.set("ProtocolMetric", id.toString(), this);
+    }
   }
 
   static load(id: string): ProtocolMetric | null {
-    return store.get("ProtocolMetric", id) as ProtocolMetric | null;
+    return changetype<ProtocolMetric | null>(store.get("ProtocolMetric", id));
   }
 
   get id(): string {
     let value = this.get("id");
-    return value.toString();
+    return value!.toString();
   }
 
   set id(value: string) {
@@ -285,7 +379,7 @@ export class ProtocolMetric extends Entity {
 
   get timestamp(): BigInt {
     let value = this.get("timestamp");
-    return value.toBigInt();
+    return value!.toBigInt();
   }
 
   set timestamp(value: BigInt) {
@@ -294,7 +388,7 @@ export class ProtocolMetric extends Entity {
 
   get ohmCirculatingSupply(): BigDecimal {
     let value = this.get("ohmCirculatingSupply");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set ohmCirculatingSupply(value: BigDecimal) {
@@ -303,7 +397,7 @@ export class ProtocolMetric extends Entity {
 
   get sOhmCirculatingSupply(): BigDecimal {
     let value = this.get("sOhmCirculatingSupply");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set sOhmCirculatingSupply(value: BigDecimal) {
@@ -312,7 +406,7 @@ export class ProtocolMetric extends Entity {
 
   get totalSupply(): BigDecimal {
     let value = this.get("totalSupply");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set totalSupply(value: BigDecimal) {
@@ -321,7 +415,7 @@ export class ProtocolMetric extends Entity {
 
   get ohmPrice(): BigDecimal {
     let value = this.get("ohmPrice");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set ohmPrice(value: BigDecimal) {
@@ -330,7 +424,7 @@ export class ProtocolMetric extends Entity {
 
   get marketCap(): BigDecimal {
     let value = this.get("marketCap");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set marketCap(value: BigDecimal) {
@@ -339,7 +433,7 @@ export class ProtocolMetric extends Entity {
 
   get totalValueLocked(): BigDecimal {
     let value = this.get("totalValueLocked");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set totalValueLocked(value: BigDecimal) {
@@ -348,7 +442,7 @@ export class ProtocolMetric extends Entity {
 
   get treasuryRiskFreeValue(): BigDecimal {
     let value = this.get("treasuryRiskFreeValue");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set treasuryRiskFreeValue(value: BigDecimal) {
@@ -357,7 +451,7 @@ export class ProtocolMetric extends Entity {
 
   get treasuryMarketValue(): BigDecimal {
     let value = this.get("treasuryMarketValue");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set treasuryMarketValue(value: BigDecimal) {
@@ -366,7 +460,7 @@ export class ProtocolMetric extends Entity {
 
   get nextEpochRebase(): BigDecimal {
     let value = this.get("nextEpochRebase");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set nextEpochRebase(value: BigDecimal) {
@@ -375,7 +469,7 @@ export class ProtocolMetric extends Entity {
 
   get nextDistributedOhm(): BigDecimal {
     let value = this.get("nextDistributedOhm");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set nextDistributedOhm(value: BigDecimal) {
@@ -384,7 +478,7 @@ export class ProtocolMetric extends Entity {
 
   get treasuryDaiRiskFreeValue(): BigDecimal {
     let value = this.get("treasuryDaiRiskFreeValue");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set treasuryDaiRiskFreeValue(value: BigDecimal) {
@@ -393,7 +487,7 @@ export class ProtocolMetric extends Entity {
 
   get treasuryFraxRiskFreeValue(): BigDecimal {
     let value = this.get("treasuryFraxRiskFreeValue");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set treasuryFraxRiskFreeValue(value: BigDecimal) {
@@ -402,7 +496,7 @@ export class ProtocolMetric extends Entity {
 
   get treasuryLusdRiskFreeValue(): BigDecimal {
     let value = this.get("treasuryLusdRiskFreeValue");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set treasuryLusdRiskFreeValue(value: BigDecimal) {
@@ -411,7 +505,7 @@ export class ProtocolMetric extends Entity {
 
   get treasuryWETHRiskFreeValue(): BigDecimal {
     let value = this.get("treasuryWETHRiskFreeValue");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set treasuryWETHRiskFreeValue(value: BigDecimal) {
@@ -420,7 +514,7 @@ export class ProtocolMetric extends Entity {
 
   get treasuryDaiMarketValue(): BigDecimal {
     let value = this.get("treasuryDaiMarketValue");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set treasuryDaiMarketValue(value: BigDecimal) {
@@ -429,7 +523,7 @@ export class ProtocolMetric extends Entity {
 
   get treasuryFraxMarketValue(): BigDecimal {
     let value = this.get("treasuryFraxMarketValue");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set treasuryFraxMarketValue(value: BigDecimal) {
@@ -438,7 +532,7 @@ export class ProtocolMetric extends Entity {
 
   get treasuryLusdMarketValue(): BigDecimal {
     let value = this.get("treasuryLusdMarketValue");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set treasuryLusdMarketValue(value: BigDecimal) {
@@ -447,7 +541,7 @@ export class ProtocolMetric extends Entity {
 
   get treasuryUstMarketValue(): BigDecimal {
     let value = this.get("treasuryUstMarketValue");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set treasuryUstMarketValue(value: BigDecimal) {
@@ -456,7 +550,7 @@ export class ProtocolMetric extends Entity {
 
   get treasuryXsushiMarketValue(): BigDecimal {
     let value = this.get("treasuryXsushiMarketValue");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set treasuryXsushiMarketValue(value: BigDecimal) {
@@ -465,7 +559,7 @@ export class ProtocolMetric extends Entity {
 
   get treasuryWETHMarketValue(): BigDecimal {
     let value = this.get("treasuryWETHMarketValue");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set treasuryWETHMarketValue(value: BigDecimal) {
@@ -474,7 +568,7 @@ export class ProtocolMetric extends Entity {
 
   get treasuryWBTCMarketValue(): BigDecimal {
     let value = this.get("treasuryWBTCMarketValue");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set treasuryWBTCMarketValue(value: BigDecimal) {
@@ -483,7 +577,7 @@ export class ProtocolMetric extends Entity {
 
   get treasuryCVXMarketValue(): BigDecimal {
     let value = this.get("treasuryCVXMarketValue");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set treasuryCVXMarketValue(value: BigDecimal) {
@@ -492,7 +586,7 @@ export class ProtocolMetric extends Entity {
 
   get treasuryOtherMarketValue(): BigDecimal {
     let value = this.get("treasuryOtherMarketValue");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set treasuryOtherMarketValue(value: BigDecimal) {
@@ -501,7 +595,7 @@ export class ProtocolMetric extends Entity {
 
   get treasuryLPValue(): BigDecimal {
     let value = this.get("treasuryLPValue");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set treasuryLPValue(value: BigDecimal) {
@@ -510,7 +604,7 @@ export class ProtocolMetric extends Entity {
 
   get treasuryStableBacking(): BigDecimal {
     let value = this.get("treasuryStableBacking");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set treasuryStableBacking(value: BigDecimal) {
@@ -519,7 +613,7 @@ export class ProtocolMetric extends Entity {
 
   get treasuryVolatileBacking(): BigDecimal {
     let value = this.get("treasuryVolatileBacking");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set treasuryVolatileBacking(value: BigDecimal) {
@@ -528,7 +622,7 @@ export class ProtocolMetric extends Entity {
 
   get treasuryTotalBacking(): BigDecimal {
     let value = this.get("treasuryTotalBacking");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set treasuryTotalBacking(value: BigDecimal) {
@@ -537,7 +631,7 @@ export class ProtocolMetric extends Entity {
 
   get currentAPY(): BigDecimal {
     let value = this.get("currentAPY");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set currentAPY(value: BigDecimal) {
@@ -546,7 +640,7 @@ export class ProtocolMetric extends Entity {
 
   get runway2dot5k(): BigDecimal | null {
     let value = this.get("runway2dot5k");
-    if (value === null || value.kind == ValueKind.NULL) {
+    if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
       return value.toBigDecimal();
@@ -554,16 +648,16 @@ export class ProtocolMetric extends Entity {
   }
 
   set runway2dot5k(value: BigDecimal | null) {
-    if (value === null) {
+    if (!value) {
       this.unset("runway2dot5k");
     } else {
-      this.set("runway2dot5k", Value.fromBigDecimal(value as BigDecimal));
+      this.set("runway2dot5k", Value.fromBigDecimal(<BigDecimal>value));
     }
   }
 
   get runway5k(): BigDecimal | null {
     let value = this.get("runway5k");
-    if (value === null || value.kind == ValueKind.NULL) {
+    if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
       return value.toBigDecimal();
@@ -571,16 +665,16 @@ export class ProtocolMetric extends Entity {
   }
 
   set runway5k(value: BigDecimal | null) {
-    if (value === null) {
+    if (!value) {
       this.unset("runway5k");
     } else {
-      this.set("runway5k", Value.fromBigDecimal(value as BigDecimal));
+      this.set("runway5k", Value.fromBigDecimal(<BigDecimal>value));
     }
   }
 
   get runway7dot5k(): BigDecimal | null {
     let value = this.get("runway7dot5k");
-    if (value === null || value.kind == ValueKind.NULL) {
+    if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
       return value.toBigDecimal();
@@ -588,16 +682,16 @@ export class ProtocolMetric extends Entity {
   }
 
   set runway7dot5k(value: BigDecimal | null) {
-    if (value === null) {
+    if (!value) {
       this.unset("runway7dot5k");
     } else {
-      this.set("runway7dot5k", Value.fromBigDecimal(value as BigDecimal));
+      this.set("runway7dot5k", Value.fromBigDecimal(<BigDecimal>value));
     }
   }
 
   get runway10k(): BigDecimal | null {
     let value = this.get("runway10k");
-    if (value === null || value.kind == ValueKind.NULL) {
+    if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
       return value.toBigDecimal();
@@ -605,16 +699,16 @@ export class ProtocolMetric extends Entity {
   }
 
   set runway10k(value: BigDecimal | null) {
-    if (value === null) {
+    if (!value) {
       this.unset("runway10k");
     } else {
-      this.set("runway10k", Value.fromBigDecimal(value as BigDecimal));
+      this.set("runway10k", Value.fromBigDecimal(<BigDecimal>value));
     }
   }
 
   get runway20k(): BigDecimal | null {
     let value = this.get("runway20k");
-    if (value === null || value.kind == ValueKind.NULL) {
+    if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
       return value.toBigDecimal();
@@ -622,16 +716,16 @@ export class ProtocolMetric extends Entity {
   }
 
   set runway20k(value: BigDecimal | null) {
-    if (value === null) {
+    if (!value) {
       this.unset("runway20k");
     } else {
-      this.set("runway20k", Value.fromBigDecimal(value as BigDecimal));
+      this.set("runway20k", Value.fromBigDecimal(<BigDecimal>value));
     }
   }
 
   get runway50k(): BigDecimal | null {
     let value = this.get("runway50k");
-    if (value === null || value.kind == ValueKind.NULL) {
+    if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
       return value.toBigDecimal();
@@ -639,16 +733,16 @@ export class ProtocolMetric extends Entity {
   }
 
   set runway50k(value: BigDecimal | null) {
-    if (value === null) {
+    if (!value) {
       this.unset("runway50k");
     } else {
-      this.set("runway50k", Value.fromBigDecimal(value as BigDecimal));
+      this.set("runway50k", Value.fromBigDecimal(<BigDecimal>value));
     }
   }
 
   get runway70k(): BigDecimal | null {
     let value = this.get("runway70k");
-    if (value === null || value.kind == ValueKind.NULL) {
+    if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
       return value.toBigDecimal();
@@ -656,16 +750,16 @@ export class ProtocolMetric extends Entity {
   }
 
   set runway70k(value: BigDecimal | null) {
-    if (value === null) {
+    if (!value) {
       this.unset("runway70k");
     } else {
-      this.set("runway70k", Value.fromBigDecimal(value as BigDecimal));
+      this.set("runway70k", Value.fromBigDecimal(<BigDecimal>value));
     }
   }
 
   get runway100k(): BigDecimal | null {
     let value = this.get("runway100k");
-    if (value === null || value.kind == ValueKind.NULL) {
+    if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
       return value.toBigDecimal();
@@ -673,16 +767,16 @@ export class ProtocolMetric extends Entity {
   }
 
   set runway100k(value: BigDecimal | null) {
-    if (value === null) {
+    if (!value) {
       this.unset("runway100k");
     } else {
-      this.set("runway100k", Value.fromBigDecimal(value as BigDecimal));
+      this.set("runway100k", Value.fromBigDecimal(<BigDecimal>value));
     }
   }
 
   get runwayCurrent(): BigDecimal | null {
     let value = this.get("runwayCurrent");
-    if (value === null || value.kind == ValueKind.NULL) {
+    if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
       return value.toBigDecimal();
@@ -690,16 +784,16 @@ export class ProtocolMetric extends Entity {
   }
 
   set runwayCurrent(value: BigDecimal | null) {
-    if (value === null) {
+    if (!value) {
       this.unset("runwayCurrent");
     } else {
-      this.set("runwayCurrent", Value.fromBigDecimal(value as BigDecimal));
+      this.set("runwayCurrent", Value.fromBigDecimal(<BigDecimal>value));
     }
   }
 
   get treasuryOhmDaiPOL(): BigDecimal {
     let value = this.get("treasuryOhmDaiPOL");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set treasuryOhmDaiPOL(value: BigDecimal) {
@@ -708,7 +802,7 @@ export class ProtocolMetric extends Entity {
 
   get treasuryOhmFraxPOL(): BigDecimal {
     let value = this.get("treasuryOhmFraxPOL");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set treasuryOhmFraxPOL(value: BigDecimal) {
@@ -717,7 +811,7 @@ export class ProtocolMetric extends Entity {
 
   get treasuryOhmLusdPOL(): BigDecimal {
     let value = this.get("treasuryOhmLusdPOL");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set treasuryOhmLusdPOL(value: BigDecimal) {
@@ -726,7 +820,7 @@ export class ProtocolMetric extends Entity {
 
   get treasuryOhmEthPOL(): BigDecimal {
     let value = this.get("treasuryOhmEthPOL");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set treasuryOhmEthPOL(value: BigDecimal) {
@@ -738,26 +832,37 @@ export class BondDiscount extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
+
+    this.set("timestamp", Value.fromBigInt(BigInt.zero()));
+    this.set("dai_discount", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set("ohmdai_discount", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set("frax_discount", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set("ohmfrax_discount", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set("eth_discount", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set("lusd_discount", Value.fromBigDecimal(BigDecimal.zero()));
+    this.set("ohmlusd_discount", Value.fromBigDecimal(BigDecimal.zero()));
   }
 
   save(): void {
     let id = this.get("id");
-    assert(id !== null, "Cannot save BondDiscount entity without an ID");
-    assert(
-      id.kind == ValueKind.STRING,
-      "Cannot save BondDiscount entity with non-string ID. " +
-        'Considering using .toHex() to convert the "id" to a string.'
-    );
-    store.set("BondDiscount", id.toString(), this);
+    assert(id != null, "Cannot save BondDiscount entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        "Cannot save BondDiscount entity with non-string ID. " +
+          'Considering using .toHex() to convert the "id" to a string.'
+      );
+      store.set("BondDiscount", id.toString(), this);
+    }
   }
 
   static load(id: string): BondDiscount | null {
-    return store.get("BondDiscount", id) as BondDiscount | null;
+    return changetype<BondDiscount | null>(store.get("BondDiscount", id));
   }
 
   get id(): string {
     let value = this.get("id");
-    return value.toString();
+    return value!.toString();
   }
 
   set id(value: string) {
@@ -766,7 +871,7 @@ export class BondDiscount extends Entity {
 
   get timestamp(): BigInt {
     let value = this.get("timestamp");
-    return value.toBigInt();
+    return value!.toBigInt();
   }
 
   set timestamp(value: BigInt) {
@@ -775,7 +880,7 @@ export class BondDiscount extends Entity {
 
   get dai_discount(): BigDecimal {
     let value = this.get("dai_discount");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set dai_discount(value: BigDecimal) {
@@ -784,7 +889,7 @@ export class BondDiscount extends Entity {
 
   get ohmdai_discount(): BigDecimal {
     let value = this.get("ohmdai_discount");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set ohmdai_discount(value: BigDecimal) {
@@ -793,7 +898,7 @@ export class BondDiscount extends Entity {
 
   get frax_discount(): BigDecimal {
     let value = this.get("frax_discount");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set frax_discount(value: BigDecimal) {
@@ -802,7 +907,7 @@ export class BondDiscount extends Entity {
 
   get ohmfrax_discount(): BigDecimal {
     let value = this.get("ohmfrax_discount");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set ohmfrax_discount(value: BigDecimal) {
@@ -811,7 +916,7 @@ export class BondDiscount extends Entity {
 
   get eth_discount(): BigDecimal {
     let value = this.get("eth_discount");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set eth_discount(value: BigDecimal) {
@@ -820,7 +925,7 @@ export class BondDiscount extends Entity {
 
   get lusd_discount(): BigDecimal {
     let value = this.get("lusd_discount");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set lusd_discount(value: BigDecimal) {
@@ -829,7 +934,7 @@ export class BondDiscount extends Entity {
 
   get ohmlusd_discount(): BigDecimal {
     let value = this.get("ohmlusd_discount");
-    return value.toBigDecimal();
+    return value!.toBigDecimal();
   }
 
   set ohmlusd_discount(value: BigDecimal) {
