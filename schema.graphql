@@ -1,10 +1,10 @@
-type DailyBond @entity {
-  id: ID!
-  timestamp: BigInt!
-  token: Token!
-  amount: BigDecimal!
-  value: BigDecimal!
-}
+# type DailyBond @entity {
+#   id: ID!
+#   timestamp: BigInt!
+#   token: Token!
+#   amount: BigDecimal!
+#   value: BigDecimal!
+# }
 
 type Rebase @entity {
   id: ID!
@@ -73,14 +73,14 @@ type ProtocolMetric @entity {
   treasuryOhmEthPOL: BigDecimal!
 }
 
-type BondDiscount @entity {
-  id: ID!
-  timestamp: BigInt!
-  dai_discount: BigDecimal!
-  ohmdai_discount: BigDecimal!
-  frax_discount: BigDecimal!
-  ohmfrax_discount: BigDecimal!
-  eth_discount: BigDecimal!
-  lusd_discount: BigDecimal!
-  ohmlusd_discount: BigDecimal!
-}
+# type BondDiscount @entity {
+#   id: ID!
+#   timestamp: BigInt!
+#   dai_discount: BigDecimal!
+#   ohmdai_discount: BigDecimal!
+#   frax_discount: BigDecimal!
+#   ohmfrax_discount: BigDecimal!
+#   eth_discount: BigDecimal!
+#   lusd_discount: BigDecimal!
+#   ohmlusd_discount: BigDecimal!
+# }
